@@ -111,6 +111,9 @@ export default function Datasets() {
   }, [datasets, filters, isAuthenticated, orgNames]);
 
   const totalPages = total != null ? Math.max(1, Math.ceil(total / pageSize)) : null;
+  // Filters run on the current page only, so a filtered view shows its own count
+  const filtered = !isAuthenticated && (filters.availability.length > 0 || filters.org.length > 0);
+  const count = filtered ? shown.length : (total ?? shown.length);
   const goTo = (p) => {
     setPage(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -172,7 +175,7 @@ export default function Datasets() {
         <div>
           <div className="results-bar">
             <span className="count">
-              <b>{total ?? shown.length}</b> dataset{(total ?? shown.length) !== 1 ? "s" : ""}
+              <b>{count}</b> dataset{count !== 1 ? "s" : ""}
               {totalPages != null && (
                 <span className="count-pages">
                   Page {page} of {totalPages} · {pageSize} per page

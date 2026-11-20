@@ -36,7 +36,11 @@ function stubDatasets({ page1 = [], page2 = [], orgs = { items: [] } } = {}) {
   return stubFetch({
     "/api/datasets": (url) => {
       const { offset } = pageFromUrl(url);
-      return jsonResponse(offset === 0 ? page1 : page2);
+      // Same shape as the real API with with_meta=true: {items, total}
+      return jsonResponse({
+        items: offset === 0 ? page1 : page2,
+        total: page1.length + page2.length,
+      });
     },
     "/api/organizations/list_organizations": jsonResponse(orgs),
   });
@@ -53,7 +57,8 @@ describe("Datasets module", () => {
     renderDatasets();
     expect(await screen.findByText(/no datasets match/i)).toBeInTheDocument();
     expect(screen.getByText(/page 1/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
+    // The pager hides itself when there are no results
+    expect(screen.queryByRole("button", { name: /next/i })).not.toBeInTheDocument();
     expect(document.querySelector(".rows")).not.toBeInTheDocument();
   });
 
