@@ -115,7 +115,7 @@ function SignIn() {
       <BrandMark />
       <div className="auth-card">
         <h1 className="display">Sign in</h1>
-        <p className="auth-sub">Access your workspace on the Data Portal. (pipeline test)</p>
+        <p className="auth-sub">Access your workspace on the Data Portal.</p>
 
         {error && (
           <div
